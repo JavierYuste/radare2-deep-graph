@@ -15,5 +15,5 @@ The _Deep callgraph_ graph can also be generated from the command line, see the 
 ![alt text](https://github.com/JavierYuste/radare2-deep-graphs/blob/master/images/CommandLineUse.png "Command line script")
 
 ## TODO
-- _Deep callgraph_ graphs are broken due to a now solved issue, see [closed issue #13590](https://github.com/radare/radare2/issues/13590). These graphs will be available on Cutter as soon as they update their radare2 version.
+- _Deep callgraph_ graphs are broken due to a now solved issue, see [closed issue #13590](https://github.com/radare/radare2/issues/13590). These graphs will be available on the Cutter plugin as soon as they update their radare2 version.
 - Take _Deep callgraph_ settings from the user settings.
