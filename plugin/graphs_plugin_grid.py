@@ -36,7 +36,6 @@ class DeepGraphs(cutter.CutterDockWidget):
         layout.addWidget(self.combo, 0, 4)
         layout.setAlignment(self.combo, Qt.AlignHCenter)
 
-        # TODO: This graph is not available due to an issue on radare2 (see closed issue #13590). It will be available as soon as Cutter updates its radare2 version.
         deep_button = QPushButton(content)
         deep_button.setText("Deep callgraph")
         deep_button.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
@@ -121,6 +120,7 @@ class DeepGraphs(cutter.CutterDockWidget):
 
     def generate_callgraph(self):
         # TODO: get user settings for the .dot graph instead of using this hardcoded settings
+        print("Entering function")
         self.graph_dot = """digraph code {
         rankdir=LR;
         outputorder=edgesfirst;
@@ -128,11 +128,16 @@ class DeepGraphs(cutter.CutterDockWidget):
         node [fillcolor=white style=filled fontname="Courier New Bold" fontsize=14 shape=box];
         edge [arrowhead="normal" style=bold weight=2];"""
         self.used_nodes = []
+        print("Getting name of function at current address")
         function_name = cutter.cmd('afi.')
         function_name = function_name.replace("\n", "")
+        print("Getting functions list")
         self.functions_list = cutter.cmdj('aflmj')
+        print("Recursive calling")
         self.get_calls(function_name)
         self.graph_dot += '\n}'
+        print("Output")
+        self.output_callgraph()
 
     def add_node(self, name):
         if name not in self.used_nodes:
@@ -153,7 +158,7 @@ class DeepGraphs(cutter.CutterDockWidget):
                         self.get_calls(call['name'])
 
     def output_callgraph(self):
-        output = 'deep_callgraph_' + cutter.cmd('afi.') + self.get_output_format_extension(self.combo.currentIndex())
+        output = self.get_output_name("deep_callgraph", function=True)
         file = open(output, "w")
         file.write(self.graph_dot)
         file.close()
