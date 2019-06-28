@@ -16,3 +16,4 @@ The _Deep callgraph_ graph can also be generated from the command line, see the 
 
 ## TODO
 - Take _Deep callgraph_ settings from the user settings.
+- The script is currently not working

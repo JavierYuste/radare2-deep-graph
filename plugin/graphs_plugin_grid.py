@@ -1,4 +1,21 @@
-import cutter
+"""
+A Cutter plugin to generate radare2 graphs. 
+It also provides a new graph called Deep callgraph, which builds an in-depth callgraph from the current function, 
+adding recursively its callees' callings.
+"""
+
+# Imports code inspired by Itay Cohen @ https://github.com/CheckPointSW/Cyber-Research/blob/master/Malware/APT32/APT32GraphDeobfuscator.py
+try:
+    import cutter
+    from PySide2.QtCore import QObject, SIGNAL, Qt
+    from PySide2.QtWidgets import QAction, QVBoxLayout, QLabel, QWidget, QSizePolicy, QPushButton, QComboBox, QLineEdit, QGroupBox, QGridLayout
+    pipe = cutter
+    cutter_available = True
+
+except:
+    import r2pipe
+    pipe = r2pipe.open()
+cutter_available = False
 
 from PySide2.QtCore import QObject, SIGNAL, Qt
 from PySide2.QtWidgets import QAction, QVBoxLayout, QLabel, QWidget, QSizePolicy, QPushButton, QComboBox, QLineEdit, QGroupBox, QGridLayout
@@ -256,7 +273,7 @@ class DeepGraphs(cutter.CutterDockWidget):
 class DeepGraphsPlugin(cutter.CutterPlugin):
     name = "DeepGraphs"
     description = "Graphs builder plugin"
-    version = "0.2"
+    version = "1.0"
     author = "Javier Yuste"
 
     def __init__(self):

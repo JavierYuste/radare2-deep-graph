@@ -1,22 +1,10 @@
+#!/usr/bin/python3
 import r2pipe
-import argparse
-from datetime import datetime
-
-parser = argparse.ArgumentParser(description="Obtain a deep callgraph from a given function.")
-# Make this optional
-parser.add_argument("-o", dest='output', type=str, help="Output file to export the graph in dot format")
-parser.add_argument("-f", dest='function', type=str, help="Function address")
-args = parser.parse_args()
-# Necesito una estructura para guardar todas las funciones cuyas llamadas hemos cogido
-# Una funcion para coger las llamadas de una call_entry
-# Un string .dot al que ir anadiendo nodos y demas
 
 class deep_callgraph():
     def __init__(self):
         try:
-            print("Starting")
             r2 = r2pipe.open()
-            print("Opened pipe")
             self.graph_dot = """digraph code {
             rankdir=LR;
             outputorder=edgesfirst;
@@ -24,24 +12,16 @@ class deep_callgraph():
             node [fillcolor=white style=filled fontname="Courier New Bold" fontsize=14 shape=box];
             edge [arrowhead="normal" style=bold weight=2];"""
             self.used_nodes = []
-            r2.cmd('s')
-            print('wtf')
-            r2.cmd('s ' + str(args.function))
-            print("Here?")
-            print(r2.cmd('s'))
+            print("NAme")
             function_name = r2.cmdj('afij')
             function_name = function_name['name']
-            print("Before")
             function_name = function_name.replace("\n", "")
-            print("Function name: " + function_name)
+            print("list")
             self.functions_list = r2.cmdj('aflmj')
-            print("Obtained functions list")
-            # Llamada a funcion recursiva con current_function y .dot
             self.get_calls(function_name)
-            # Print graph_dot
             self.graph_dot += '\n}'
-            # Output graph_dot
-            self.output_callgraph("deep.dot")
+            print("output")
+            self.output_callgraph(function_name)
         except:
             pass
 
@@ -65,14 +45,14 @@ class deep_callgraph():
                     self.get_calls(call['name'])
 
     def output_callgraph(self, output):
-        # When output name is optional, take date as name like deep_callgraph_x.dot
-        if args.output == None:
-            output = 'callgraph_' + str(datetime.now())
-        elif output[-4:] != '.dot':
-            output += '.dot'
-        file = open(output, "w")
-        file.write(self.graph_dot)
-        file.close()
+        try:
+            function_name = output
+            function_name += "_deep_callgraph.dot"
+            file = open(output, "w")
+            file.write(self.graph_dot)
+            file.close()
+        except Exception as e:
+            print(e)
 
 if __name__ == '__main__':
     callgraph = deep_callgraph()
